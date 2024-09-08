@@ -15,7 +15,14 @@
     <description>pepito-mastodon</description>
     <url/>
     <licenses>
-        <license/>
+         <license>
+            <name>MIT License</name>
+            <url>https://opensource.org/licenses/MIT</url>
+        </license>
+        <license>
+            <name>WTFPL</name>
+            <url>http://www.wtfpl.net/</url>
+        </license>
     </licenses>
     <properties>
         <java.version>21</java.version>
