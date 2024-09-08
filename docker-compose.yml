@@ -1,0 +1,9 @@
+# Example configuration for the docker image
+services:
+  pepito-mastodon:
+    image: pepito-mastodon
+    container_name: pepito-mastodon
+    restart: always
+    environment:
+      - MASTODON_INSTANCE=mastodon.social
+      - MASTODON_TOKEN=abcdef.....
