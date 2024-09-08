@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: pepito-mastodon
+
+pepito-api:
+  url: https://api.thecatdoor.com/sse/v1/events
+
+mastodon:
+  instance: mastodon.social
+  token: 123456
