@@ -1,4 +1,4 @@
-# Mastodon Service for Pepito API
+# Mastodon Service for Pépito API
 
 A mastodon client for the [Pépito-API](https://github.com/Clement87/Pepito-API?).
 
