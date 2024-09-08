@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import social.bigbone.api.exception.BigBoneRequestException;
 
+import java.io.IOException;
 import java.lang.runtime.ObjectMethods;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -47,7 +48,7 @@ public class PepitoApiService {
         }, 1, 30, TimeUnit.SECONDS);
     }
 
-    public void startApiListener() {
+    public void startApiListener() throws InterruptedException {
         log.info("Starting API listener");
         var target = ClientBuilder.newClient()
                 .target(this.url);
@@ -60,11 +61,13 @@ public class PepitoApiService {
                 }
             });
             source.open();
-            log.info("Waiting for events...");
+            while(source.isOpen()){
+                Thread.sleep(1000);
+            }
         }
     }
 
-    public void onApiEvent(InboundSseEvent event) throws JsonProcessingException {
+    public void onApiEvent(InboundSseEvent event) throws IOException, BigBoneRequestException {
         var dataString = event.readData(String.class);
         var data = mapper.readValue(dataString, PepitoApiResponse.class);
         log.info("Response from API: {}", mapper.writeValueAsString(data));
