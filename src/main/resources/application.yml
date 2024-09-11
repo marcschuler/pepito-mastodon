@@ -4,6 +4,7 @@ spring:
 
 pepito-api:
   url: https://api.thecatdoor.com/sse/v1/events
+  heartbeat-timeout: 22
 
 mastodon:
   instance: mastodon.social

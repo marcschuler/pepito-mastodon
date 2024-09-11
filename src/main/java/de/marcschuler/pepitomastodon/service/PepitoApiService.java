@@ -18,11 +18,11 @@ import org.springframework.stereotype.Service;
 import social.bigbone.api.exception.BigBoneRequestException;
 
 import java.io.IOException;
-import java.lang.runtime.ObjectMethods;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 @RequiredArgsConstructor
@@ -36,16 +36,20 @@ public class PepitoApiService {
 
     @Value("${pepito-api.url}")
     private String url;
+    @Value("${pepito-api.heartbeat-timeout}")
+    private long heartbeatTimeout;
 
     @PostConstruct
     void init() {
         executorService.scheduleWithFixedDelay(() -> {
             try {
-                startApiListener();
+                while (true) {
+                    startApiListener();
+                }
             } catch (Exception e) {
                 log.error("Error with API connection", e);
             }
-        }, 1, 30, TimeUnit.SECONDS);
+        }, 1, 4, TimeUnit.SECONDS);
     }
 
     public void startApiListener() throws InterruptedException {
@@ -53,21 +57,31 @@ public class PepitoApiService {
         var target = ClientBuilder.newClient()
                 .target(this.url);
         try (var source = SseEventSource.target(target).build()) {
+            var running = new AtomicBoolean(true);
+            var lastHeartBeat = new AtomicLong(System.currentTimeMillis());
             source.register(event -> {
                 try {
+                    lastHeartBeat.set(System.currentTimeMillis());
                     onApiEvent(event);
                 } catch (Exception e) {
                     log.error("Could not process event from API", e);
                 }
+            }, error -> {
+                running.set(false);
+                log.error("Error on SES connection", error);
+            }, () -> {
+                log.info("API connection completed");
+                running.set(false);
             });
             source.open();
-            while(source.isOpen()){
+            while (source.isOpen() && running.get() && lastHeartBeat.get() > System.currentTimeMillis() - heartbeatTimeout * 1000) {
                 Thread.sleep(1000);
             }
+            log.info("Connection lost, last heartbeat was {}ms ago, is  {} and {}", System.currentTimeMillis() - lastHeartBeat.get(), running.get() ? "running" : "not running", source.isOpen() ? "source is open" : "source is closed");
         }
     }
 
-    public void onApiEvent(InboundSseEvent event) throws IOException, BigBoneRequestException {
+    public void onApiEvent(InboundSseEvent event) throws IOException {
         var dataString = event.readData(String.class);
         var data = mapper.readValue(dataString, PepitoApiResponse.class);
         log.info("Response from API: {}", mapper.writeValueAsString(data));

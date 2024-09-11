@@ -11,11 +11,12 @@ There is an example [docker-compose](https://github.com/marcschuler/pepito-masto
 
 ## Configuration
 
-| Key                   | Application YAML  | Docker ENV        | Example value                            |
-|-----------------------|-------------------|-------------------|------------------------------------------|
-| Pêpito API Url        | pepito-api.url    | PEPITPAPI_URL     | https://api.thecatdoor.com/sse/v1/events |
-| Mastodon Instance     | mastodon.instance | MASTODON_INSTANCE | mastodon.social                          |
-| Mastodn Account Token | mastodon.token    | MASTODON_TOKEN    | abcdefg...                               |
+| Key                          | Application YAML             | Docker ENV                 | Example value                            |
+|------------------------------|------------------------------|----------------------------|------------------------------------------|
+| Pêpito API Url               | pepito-api.url               | PEPITPAPI_URL              | https://api.thecatdoor.com/sse/v1/events |
+| Pêpito API Heartbeat Timeout | pepito-api.heartbeat-timeout | PEPITPAPI_HEARTBEATTIMEOUT | 22                                       |
+| Mastodon Instance            | mastodon.instance            | MASTODON_INSTANCE          | mastodon.social                          |
+| Mastodn Account Token        | mastodon.token               | MASTODON_TOKEN             | abcdefg...                               |
 
 ## TODO
 
