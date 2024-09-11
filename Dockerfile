@@ -5,5 +5,4 @@ RUN mvn package
 FROM eclipse-temurin:21
 ARG JAR_FILE=target/*.jar
 COPY --from=builder ${JAR_FILE} pepito-mastodon.jar
-EXPOSE 8080
 ENTRYPOINT ["java","-jar","./pepito-mastodon.jar"]

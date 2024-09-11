@@ -2,7 +2,6 @@ package de.marcschuler.pepitomastodon;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.util.TimeZone;
 
 public class PepitoApiUtil {
