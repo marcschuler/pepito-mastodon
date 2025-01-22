@@ -11,7 +11,21 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  build-and-push:
+  # Simply builds and tests independently of docker
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+    - name: Maven Test
+      run: mvn test
+    - name: Maven Verify
+      run: mvn verify
+
+  # Build and push docker image
+  docker-image:
     runs-on: ubuntu-latest
     permissions:
       contents: read
